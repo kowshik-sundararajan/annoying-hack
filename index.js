@@ -13,6 +13,10 @@ const port = 3000;
 let languages = '';
 let target = '';
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
 function detectAndTranslateLanguages() {
   translate
     .detect(text)
@@ -47,7 +51,8 @@ function listLanguages() {
     .getLanguages()
     .then((results) => {
       [languages] = results;
-      target = languages[2].code;
+      const randomNumber = getRandomInt(languages.length);
+      target = languages[randomNumber].code;
       detectAndTranslateLanguages();
     })
     .catch((err) => {
