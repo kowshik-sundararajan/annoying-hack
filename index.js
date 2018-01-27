@@ -1,9 +1,8 @@
 const Translate = require('@google-cloud/translate');
 const express = require('express');
-require('./config');
 
 // Your Google Cloud Platform project ID
-const { projectId } = process.env;
+const { projectId } = require('./config.js');
 // Instantiates a client
 const translate = new Translate({ projectId });
 const text = 'Hello, world!';
@@ -74,7 +73,6 @@ function listLanguages() {
 
 app.get('/', (req, res) => {
   listLanguages().then(() => {
-    console.log('this is the translated text', translatedText);
     res.send(translatedText);
   })
     .catch((err) => {
