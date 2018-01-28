@@ -1,17 +1,22 @@
 const Translate = require('@google-cloud/translate');
 const express = require('express');
+const bodyParser = require('body-parser');
 
 // Your Google Cloud Platform project ID
 const { projectId } = require('./config.js');
-// Instantiates a client
-const translate = new Translate({ projectId });
-const text = 'Hello, world!';
+
 const app = express();
 const port = 3000;
 
+app.use(bodyParser.json());
+
+let text = '';
 let languages = '';
 let target = '';
 let translatedText = '';
+
+// Instantiates a client
+const translate = new Translate({ projectId });
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -24,17 +29,11 @@ function detectAndTranslateLanguages() {
       .then((results) => {
         let detections = results[0];
         detections = Array.isArray(detections) ? detections : [detections];
-
-        console.log('Detections:');
-        detections.forEach((detection) => {
-          console.log(`${detection.input} => ${detection.language}`);
+        detections.forEach(() => {
           translate
             .translate(text, target)
             .then((response) => {
               const translation = response[0];
-              console.log(`Text: ${text}`);
-              console.log(`Translation: ${translation}`);
-
               resolve(translation);
             })
             .catch((err) => {
@@ -61,7 +60,7 @@ function listLanguages() {
         target = languages[randomNumber].code;
         detectAndTranslateLanguages().then((response) => {
           translatedText = response;
-          resolve();
+          resolve(languages[randomNumber].name);
         });
       })
       .catch((err) => {
@@ -74,6 +73,17 @@ function listLanguages() {
 app.get('/', (req, res) => {
   listLanguages().then(() => {
     res.send(translatedText);
+  })
+    .catch((err) => {
+      console.error(err);
+      res.send('There was an error!');
+    });
+});
+
+app.post('/', (req, res) => {
+  text = req.body.text.substring(1, 5000);
+  listLanguages().then((targetLanguage) => {
+    res.send({ translatedText, targetLanguage });
   })
     .catch((err) => {
       console.error(err);

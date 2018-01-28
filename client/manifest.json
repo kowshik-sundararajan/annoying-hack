@@ -1,0 +1,17 @@
+{
+  "name": "Random language Translator",
+  "description": "Annoying Hack built at NUS HacknRoll2018",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+
+  "background": {
+    "scripts": ["event.js"]
+  },
+
+  "permissions": ["tabs", "<all_urls>"],
+
+  "manifest_version": 2
+}
