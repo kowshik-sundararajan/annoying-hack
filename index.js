@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const { projectId } = require('./config.js');
 
 const app = express();
-const port = process.env.NODE_ENV || 3000;
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
